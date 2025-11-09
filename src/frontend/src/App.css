@@ -1,0 +1,100 @@
+.App {
+  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.App-header {
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.App-header h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-card h2 {
+  color: #4CAF50;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.message {
+  font-size: 1.2rem;
+  margin: 1rem 0;
+  font-weight: 500;
+}
+
+.build-time {
+  font-size: 0.9rem;
+  color: #ccc;
+  font-style: italic;
+}
+
+.tech-stack {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  max-width: 500px;
+}
+
+.tech-stack h3 {
+  margin-bottom: 1rem;
+  color: #FFD700;
+}
+
+.tech-stack ul {
+  list-style: none;
+  padding: 0;
+}
+
+.tech-stack li {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  transition: transform 0.2s ease;
+}
+
+.tech-stack li:hover {
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .App-header h1 {
+    font-size: 2.5rem;
+  }
+
+  .status-card {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .tech-stack {
+    margin: 1rem;
+    padding: 1rem;
+  }
+}
