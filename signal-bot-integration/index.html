@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>?? Signal DevOps Bot</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        .status { background: rgba(76, 175, 80, 0.2); border-radius: 10px; padding: 20px; margin: 20px 0; }
+        .endpoint { background: rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 15px; margin: 10px 0; font-family: monospace; }
+        button { background: #4CAF50; color: white; border: none; padding: 12px 24px; border-radius: 8px; margin: 10px; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>?? Signal DevOps Bot</h1>
+        <p>Полная интеграция Signal с CI/CD системой</p>
+        
+        <div class="status" id="status">
+            <div>?? Проверка статуса...</div>
+        </div>
+        
+        <h2>?? API Эндпоинты:</h2>
+        <div class="endpoint">GET /api/health - Health Check</div>
+        <div class="endpoint">GET /api/bot/send?message=text - Отправить сообщение</div>
+        <div class="endpoint">POST /webhook/github - GitHub Webhook</div>
+        
+        <div>
+            <button onclick="checkHealth()">?? Проверить Health</button>
+            <button onclick="sendMessage()">?? Тестовое сообщение</button>
+        </div>
+        
+        <div id="result" style="margin-top: 20px; font-family: monospace; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;"></div>
+    </div>
+
+    <script>
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                document.getElementById('status').innerHTML = '? Signal Bot работает!<br>Uptime: ' + data.uptime + 'ms';
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('status').innerHTML = '? Ошибка подключения';
+                document.getElementById('result').textContent = error.message;
+            }
+        }
+        
+        async function sendMessage() {
+            try {
+                const response = await fetch('/api/bot/send?message=??+Тест+сообщения+с+веб-интерфейса!');
+                const data = await response.json();
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('result').textContent = error.message;
+            }
+        }
+        
+        // Автоматическая проверка при загрузке
+        window.addEventListener('load', checkHealth);
+    </script>
+</body>
+</html>

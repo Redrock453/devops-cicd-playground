@@ -1,0 +1,50 @@
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static(__dirname));
+
+const botState = {
+  uptime: Date.now(),
+  lastDeployment: new Date().toISOString(),
+  messageCount: 0
+};
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    uptime: Date.now() - botState.uptime,
+    lastDeployment: botState.lastDeployment,
+    messageCount: botState.messageCount
+  });
+});
+
+app.get("/api/bot/send", (req, res) => {
+  const message = req.query.message;
+  if (message) {
+    botState.messageCount++;
+    console.log("Signal message:", decodeURIComponent(message));
+    res.json({ 
+      success: true, 
+      message: "Сообщение отправлено: " + decodeURIComponent(message),
+      count: botState.messageCount
+    });
+  } else {
+    res.status(400).json({ error: "Message required" });
+  }
+});
+
+app.post("/webhook/github", (req, res) => {
+  console.log("GitHub webhook received");
+  botState.lastDeployment = new Date().toISOString();
+  res.json({ received: true, deployment: botState.lastDeployment });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Signal DevOps Bot API running on port " + PORT);
+});

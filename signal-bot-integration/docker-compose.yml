@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  # Signal DevOps Bot
+  signal-bot:
+    build: .
+    container_name: signal-devops-bot
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - SIGNAL_PHONE_NUMBER=+380984245954
+      - SIGNAL_GROUP_ID=/WIZyAAUeufaqPvbMF20EIbEWzpaFwUm91QBr1wwefY=
+    volumes:
+      - signal_data:/home/node/.local/share/signal-cli
+      - ./logs:/app/logs
+      - ./config:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - devops-network
+    depends_on:
+      - redis
+
+  # Redis для кэширования и очередей
+  redis:
+    image: redis:7-alpine
+    container_name: signal-bot-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - devops-network
+    command: redis-server --appendonly yes
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: signal-bot-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    networks:
+      - devops-network
+    depends_on:
+      - signal-bot
+
+  # Monitoring (Prometheus)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: signal-bot-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - devops-network
+
+  # Grafana для визуализации
+  grafana:
+    image: grafana/grafana:latest
+    container_name: signal-bot-grafana
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - devops-network
+
+volumes:
+  signal_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  devops-network:
+    driver: bridge

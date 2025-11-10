@@ -1,0 +1,24 @@
+{
+  "name": "signal-devops-bot",
+  "version": "2.0.0",
+  "description": "Ideal Signal Bot + DevOps CI/CD Integration",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest",
+    "deploy": "npm run build && docker build -t signal-devops-bot ."
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "ws": "^8.14.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.7",
+    "dockerode": "^4.0.2",
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
