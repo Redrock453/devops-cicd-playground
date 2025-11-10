@@ -38,7 +38,13 @@ describe('Static File Serving', () => {
       .get('/')
       .expect(200);
 
-    // Since frontend build doesn't exist in test, expect JSON response
-    expect(response.body).toHaveProperty('message');
+    // Can be either HTML (if build exists) or JSON (if no build)
+    if (response.type === 'application/json') {
+      // When frontend build doesn't exist in test, expect JSON response
+      expect(response.body).toHaveProperty('message');
+    } else {
+      // When frontend build exists, expect HTML
+      expect(response.text).toContain('<!doctype html>');
+    }
   });
 });
