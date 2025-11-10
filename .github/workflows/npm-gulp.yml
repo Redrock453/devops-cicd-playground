@@ -1,4 +1,4 @@
-name: NodeJS with Gulp
+name: NodeJS Build and Test
 
 on:
   push:
@@ -22,7 +22,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: Build and Test Backend
+      working-directory: ./src/backend
       run: |
         npm install
-        gulp
+        npm test
+
+    - name: Build and Test Frontend
+      working-directory: ./src/frontend
+      run: |
+        npm install
+        npm run build
+        npm test

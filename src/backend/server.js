@@ -42,6 +42,11 @@ app.get('/api/info', (req, res) => {
   });
 });
 
+// Health check для Kubernetes/liveness probes
+app.get('/healthz', (req, res) => {
+  res.status(200).send('OK');
+});
+
 // Обработка всех остальных GET запросов - отдаем фронтенд
 app.get('*', (req, res) => {
   const indexPath = path.join(__dirname, '../frontend/build/index.html');
@@ -56,15 +61,13 @@ app.get('*', (req, res) => {
   }
 });
 
-// Health check для Kubernetes/liveness probes
-app.get('/healthz', (req, res) => {
-  res.status(200).send('OK');
-});
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// Only start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
 
 module.exports = app;
