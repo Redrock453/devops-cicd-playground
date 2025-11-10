@@ -15,8 +15,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci
-      - run: npm test
+      
+      - name: Test Backend
+        working-directory: ./src/backend
+        run: |
+          npm ci
+          npm test
+      
+      - name: Test Frontend
+        working-directory: ./src/frontend
+        run: |
+          npm ci
+          npm test
 
   publish-gpr:
     needs: build
@@ -30,7 +40,19 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm publish
+      
+      - name: Publish Backend Package
+        working-directory: ./src/backend
+        run: |
+          npm ci
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      
+      - name: Publish Frontend Package
+        working-directory: ./src/frontend
+        run: |
+          npm ci
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
